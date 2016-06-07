@@ -63,7 +63,7 @@ let _flowBinVersionPromise = null;
 async function getOrderedFlowBinVersions(): Promise<Array<string>> {
   if (_flowBinVersionPromise === null) {
     _flowBinVersionPromise = (async function() {
-      console.log("Fetching all Flow binaries...");
+      console.log("run-tests: Fetching all Flow binaries...");
       const FLOW_BIN_VERSION_ORDER = [];
       const GH_CLIENT = gitHubClient();
       const QUERY_PAGE_SIZE = 100;
@@ -171,7 +171,7 @@ async function getOrderedFlowBinVersions(): Promise<Array<string>> {
         console.log("    flow-%s complete!", version);
       }));
 
-      console.log("Finished fetching Flow binaries.\n");
+      console.log("run-tests: Finished fetching Flow binaries.");
 
       return FLOW_BIN_VERSION_ORDER;
     })();
@@ -277,7 +277,7 @@ async function runTestGroup(
       await P.all(testBatch.map(async (flowVer) => {
         const testRunId = testGroup.id + " (flow-" + flowVer + ")";
 
-        console.log("Testing %s...", testRunId);
+        console.log("run-tests: Testing %s...", testRunId);
 
         const {
           stdErrOut,
@@ -372,7 +372,7 @@ async function runTests(
 
 export const name = "run-tests";
 export const description = "Run definition tests";
-export async function run(argv: Object): Promise<number> {
+export async function run(argv: {_: Array<string>}) {
   const testPatterns = argv._.slice(1);
 
   const cwd = process.cwd();
@@ -382,12 +382,11 @@ export async function run(argv: Object): Promise<number> {
     ? cwdDefsNPMPath
     : path.join(__dirname, '..', '..', '..', 'definitions', 'npm');
 
-  console.log('Running definition tests in %s...\n', repoDirPath);
+  console.log('run-tests: Running definition tests in %s...', repoDirPath);
 
   const results = await runTests(repoDirPath, testPatterns);
-  console.log(" ");
   Array.from(results).forEach(([testGroupName, errors]) => {
-    console.log("ERROR: %s", testGroupName);
+    console.log("run-tests: ERROR: %s", testGroupName);
     errors.forEach(err => console.log(
       " * %s\n", err.split("\n").map((line, idx) => {
         return idx === 0 ? line : "   " + line;
@@ -395,7 +394,7 @@ export async function run(argv: Object): Promise<number> {
     ));
   });
   if (results.size === 0) {
-    console.log("All tests passed!");
+    console.log("run-tests: All tests passed!");
     return 0;
   }
   return 1;

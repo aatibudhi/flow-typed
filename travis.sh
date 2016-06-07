@@ -4,5 +4,6 @@
 cd cli && \
 npm install && \
 ./node_modules/.bin/flow && \
-node dist/cli.js validate-defs && \
-node dist/cli.js run-tests
+node dist/travis.js
+#node dist/cli.js validate-defs && \
+#node dist/cli.js run-tests

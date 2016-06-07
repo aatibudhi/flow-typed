@@ -25,18 +25,16 @@ export async function run(): Promise<number> {
     }
   });
 
-  console.log(" ");
-
   validationErrors.forEach((errors, pkgNameVersion) => {
-    console.log("Found some problems with %s:", pkgNameVersion);
+    console.log("validate-defs: Found some problems with %s:", pkgNameVersion);
     errors.forEach((err) => console.log("  * " + err));
     console.log("");
   });
 
   if (validationErrors.size === 0) {
     console.log(
-      `All library definitions are named and structured correctedly. ` +
-      `(Found ${localDefs.length})`
+      `validate-defs: All library definitions are named and structured ` +
+      `correctedly. (Found ${localDefs.length})`
     );
     return 0;
   }
